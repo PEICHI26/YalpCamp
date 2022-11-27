@@ -4,6 +4,7 @@ const catchAsync = require('../utils/catchAsync');
 const Campgroud = require('../models/campground');
 const ExpressError = require('../utils/ExpressError');
 const { campgroundScehma } = require('../joi_scheema/schema');
+const { isLoggedin } = require('../middleware');
 
 const validateCampgorund = (req, res, next) => {
     //server side validate joi
@@ -17,18 +18,18 @@ const validateCampgorund = (req, res, next) => {
     }
 }
 
-router.get('/new', (req, res) => {
+router.get('/new', isLoggedin, (req, res) => {
     //render file name
     res.render('campgrounds/new')
 })
 
 //catchAsync function is going to catch the error
-router.get('/', catchAsync(async (req, res) => {
+router.get('/',catchAsync(async (req, res) => {
     const campgrounds = await Campgroud.find();
     res.render('campgrounds/index', { campgrounds })
 }))
 
-router.get('/:id', catchAsync(async (req, res) => {
+router.get('/:id', isLoggedin,catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campgroud.findById(id).populate('reviews');
     if (!campground) {
@@ -37,7 +38,7 @@ router.get('/:id', catchAsync(async (req, res) => {
     }
     res.render('campgrounds/show', { campground })
 }))
-router.get('/:id/edit', catchAsync(async (req, res) => {
+router.get('/:id/edit', isLoggedin,catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campgroud.findById(id);
     if (!campground) {
@@ -47,7 +48,7 @@ router.get('/:id/edit', catchAsync(async (req, res) => {
     res.render(`campgrounds/edit`, { campground })
 }))
 
-router.post('/', validateCampgorund, catchAsync(async (req, res, next) => {
+router.post('/',isLoggedin, validateCampgorund, catchAsync(async (req, res, next) => {
     console.log(req.body);
     const newCampgroud = new Campgroud(req.body);
     await newCampgroud.save();
@@ -57,14 +58,14 @@ router.post('/', validateCampgorund, catchAsync(async (req, res, next) => {
     res.redirect(`/campgrounds/${newCampgroud._id}`)
 }))
 
-router.put('/:id', validateCampgorund, catchAsync(async (req, res, next) => {
+router.put('/:id', isLoggedin,validateCampgorund, catchAsync(async (req, res, next) => {
     const { id } = req.params;
     const campground = await Campgroud.findByIdAndUpdate(id, req.body);
     req.flash('success', 'Successfully edit the campground')
     res.redirect(`/campgrounds/${campground._id}`)
 }))
 
-router.delete('/:id', catchAsync(async (req, res) => {
+router.delete('/:id', isLoggedin,catchAsync(async (req, res) => {
     const { id } = req.params;
     const campground = await Campgroud.findByIdAndDelete(id);
     req.flash('success', 'Successfully delete the campground')
