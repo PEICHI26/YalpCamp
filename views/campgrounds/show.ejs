@@ -19,8 +19,12 @@
                     <li class="list-group-item">
                         <%= campground.location %>
                     </li>
+                    <li class="list-group-item">
+                     <b>Author:</b> <%= campground.author.username %>
+                    </li>
                     <li class="list-group-item">$<%= campground.price %>/night</li>
                 </ul>
+                <% if( currentUser && campground.author.equals(currentUser)) { %>
                 <div class="card-body">
                     <a href="/campgrounds/<%=  campground._id %>/edit" class="card-link btn btn-primary">Edit</a>
                     <br><br>
@@ -30,6 +34,7 @@
                         </button>
                     </form>
                 </div>
+                <% } %>
             </div>
         </div>
         <div class="col-6">

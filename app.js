@@ -1,57 +1,56 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const path = require('path');
-const mongoose = require('mongoose');
-const ejsMate = require('ejs-mate');
-const session = require('express-session');
-const methodOverride = require('method-override');
-const ExpressError = require('./utils/ExpressError');
-const campgroundsRoute = require('./routes/campgrounds');
-const reviewsRoute = require('./routes/reviews');
-const usersRoute = require('./routes/users');
-const flash = require('connect-flash');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const UserModel = require('./models/user')
-
+const path = require("path");
+const mongoose = require("mongoose");
+const ejsMate = require("ejs-mate");
+const session = require("express-session");
+const methodOverride = require("method-override");
+const ExpressError = require("./utils/ExpressError");
+const campgroundsRoute = require("./routes/campgrounds");
+const reviewsRoute = require("./routes/reviews");
+const usersRoute = require("./routes/users");
+const flash = require("connect-flash");
+const passport = require("passport");
+const LocalStrategy = require("passport-local");
+const UserModel = require("./models/user");
 
 //connect to mongodb
-main().catch(err => console.log(err));
+main().catch((err) => console.log(err));
 async function main() {
-    await mongoose.connect('mongodb://localhost:27017/yelp-camp');
-    console.log("connect to mongo")
-    // use `await mongoose.connect('mongodb://user:password@localhost:27017/test');` if your database has auth enabled
+  await mongoose.connect("mongodb://localhost:27017/yelp-camp");
+  console.log("connect to mongo");
+  // use `await mongoose.connect('mongodb://user:password@localhost:27017/test');` if your database has auth enabled
 }
 
 //read ejs file
-app.engine('ejs', ejsMate)
+app.engine("ejs", ejsMate);
 
 //read files from views dir
-app.set('views', path.join(__dirname, 'views'));
+app.set("views", path.join(__dirname, "views"));
 //read ejs file
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 
-//reqest from url
-app.use(express.urlencoded({ extended: true }))
+//request from url
+app.use(express.urlencoded({ extended: true }));
 
 //override method post to what you need (ex:delete)
-app.use(methodOverride('_method'))
+app.use(methodOverride("_method"));
 
 //read files from public dir
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(express.static(path.join(__dirname, "public")));
 
 //config session
-const sess = {
-    secret: 'mysecrete',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
-}
+const sessionConfig = {
+  secret: "mysecrete",
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  },
+};
 //use session
-app.use(session(sess))
+app.use(session(sessionConfig));
 //use flash
 app.use(flash());
 
@@ -60,43 +59,42 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy(UserModel.authenticate()));
 passport.serializeUser(UserModel.serializeUser());
-passport.deserializeUser(UserModel.deserializeUser())
+passport.deserializeUser(UserModel.deserializeUser());
 
 app.use((req, res, next) => {
-    res.locals.success = req.flash('success');
-    res.locals.error =req.flash('error')
-    next();
-})
+  res.locals.currentUser = req.user;
+  res.locals.success = req.flash("success");
+  res.locals.error = req.flash("error");
+  next();
+});
 
-
-app.use('/', usersRoute)
+app.use("/", usersRoute);
 
 //add /campgrounds before every campgrounds route
-app.use('/campgrounds', campgroundsRoute);
+app.use("/campgrounds", campgroundsRoute);
 
 //add /campgrounds/:id/reviews before every campgrounds route
-app.use('/campgrounds/:id/reviews', reviewsRoute)
-
+app.use("/campgrounds/:id/reviews", reviewsRoute);
 
 //render home page
-app.get('/', (req, res) => {
-    res.render('home')
-})
+app.get("/", (req, res) => {
+  res.render("home");
+});
 
 //if any route does not exit, will run this code
-app.all('*', (req, res, next) => {
-    next(new ExpressError('Page not found', 404))
-})
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page not found", 404));
+});
 
 //every error will end up passing to this code
 app.use((err, req, res, next) => {
-    const { statusCode = 500 } = err;
-    if (!err.message) {
-        err.message = 'Somethig went wrong'
-    }
-    res.status(statusCode).render('error', { err });
-})
+  const { statusCode = 500 } = err;
+  if (!err.message) {
+    err.message = "Something went wrong";
+  }
+  res.status(statusCode).render("error", { err });
+});
 
 app.listen(3000, () => {
-    console.log('listen on port 3000')
-})
+  console.log("listen on port 3000");
+});
