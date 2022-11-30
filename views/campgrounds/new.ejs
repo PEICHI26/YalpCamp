@@ -1,18 +1,17 @@
 <% layout('layouts/boilerplate') %>
     <h1>New Campgroud</h1>
-    <form class="row g-3" id="validate" action="/campgrounds" method="post" novalidate>
+    <br>
+    <form class="row g-3" id="validate" action="/campgrounds" method="post" enctype="multipart/form-data" novalidate>
         <div class="col-md-6">
             <label for="title" class="form-label">Title</label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <input type="text" class="form-control" id="title" name="title" required />
         </div>
         <div class="col-md-6">
             <label for="location" class="form-label">Location</label>
-            <input type="text" class="form-control" id="location" name="location" required>
+            <input type="text" class="form-control" id="location" name="location" required />
         </div>
         <div class="col-9">
-            <label for="image" class="form-label">Image</label>
-            <input type="text" class="form-control" id="image"
-                placeholder="https://source.unsplash.com/collection/483251" name="image" required>
+        <input type="file" class="form-control" id="image" name="image">
         </div>
         <div class="col-12">
             <label for="description" class="form-label">Description</label>
@@ -23,12 +22,10 @@
             <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input type="text" class="form-control" id="price" name="price"
-                    aria-label="Dollar amount (with dot and two decimal places)" required>
+                    aria-label="Dollar amount (with dot and two decimal places)" required />
             </div>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Create</button>
         </div>
     </form>
-
-   

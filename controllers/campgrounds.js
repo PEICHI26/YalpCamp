@@ -32,8 +32,11 @@ module.exports.edit = async (req, res) => {
 };
 
 module.exports.create = async (req, res, next) => {
+  const imageInfo = req.file;
   const newCampground = new Campground(req.body);
   newCampground.author = req.user._id;
+  newCampground.image = imageInfo;
+  console.log(newCampground);
   await newCampground.save();
   //flash
   req.flash("success", "Successfully made a new campground");
@@ -42,7 +45,12 @@ module.exports.create = async (req, res, next) => {
 
 module.exports.update = async (req, res, next) => {
   const { id } = req.params;
+  const imageInfo = req.file;
   const campground = await Campground.findByIdAndUpdate(id, req.body);
+  if(imageInfo){
+    campground.image = imageInfo;
+    await campground.save();
+  }
   req.flash("success", "Successfully edit the campground");
   res.redirect(`/campgrounds/${campground._id}`);
 };

@@ -1,3 +1,6 @@
+if(process.env.NODE_ENV !== 'production'){
+  require('dotenv').config();
+}
 const express = require("express");
 const app = express();
 const path = require("path");
@@ -17,7 +20,7 @@ const UserModel = require("./models/user");
 //connect to mongodb
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect("mongodb://localhost:27017/yelp-camp");
+  await mongoose.connect("mongodb://localhost:27017/yalp-camp");
   console.log("connect to mongo");
   // use `await mongoose.connect('mongodb://user:password@localhost:27017/test');` if your database has auth enabled
 }

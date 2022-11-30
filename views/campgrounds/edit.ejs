@@ -3,7 +3,7 @@
 
     <h1>Edit Campgroud</h1>
 
-    <form class="row g-3" action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" novalidate id="validate">
+    <form class="row g-3" action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" enctype="multipart/form-data" novalidate id="validate">
         <div class="col-md-6">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" id="title" name="title" value="<%= campground.title %>" required>
@@ -13,10 +13,8 @@
             <input type="text" class="form-control" id="location" name="location" value="<%= campground.location %>" required>
         </div>
         <div class="col-9">
-            <label for="image" class="form-label">Image</label>
-            <input type="text" class="form-control" id="image"
-                placeholder="https://source.unsplash.com/collection/483251" name="image" value="<%= campground.image%>" required>
-        </div>
+            <input type="file" class="form-control" id="image" name="image">
+            </div>
         <div class="col-12">
             <label for="description" class="form-label">Description</label>
             <textarea type="text" class="form-control" id="description" name="description" value="<%= campground.description %>"></textarea>
