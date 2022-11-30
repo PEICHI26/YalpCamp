@@ -36,7 +36,6 @@ module.exports.create = async (req, res, next) => {
   const newCampground = new Campground(req.body);
   newCampground.author = req.user._id;
   newCampground.image = imageInfo;
-  console.log(newCampground);
   await newCampground.save();
   //flash
   req.flash("success", "Successfully made a new campground");
