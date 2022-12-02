@@ -1,10 +1,10 @@
 const Joi = require('joi');
 module.exports.campgroundSchema = Joi.object({
+    deleteImages: Joi.array(),
     title: Joi.string().required(),
     price: Joi.number().required().min(0),
     location: Joi.string().required(),
-    description: Joi.string(),
-
+    description: Joi.string()
 })
 
 module.exports.reviewSchema = Joi.object({

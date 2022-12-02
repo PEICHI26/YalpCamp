@@ -1,4 +1,4 @@
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 const express = require("express");
@@ -16,6 +16,9 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStrategy = require("passport-local");
 const UserModel = require("./models/user");
+const mongoSanitize = require('express-mongo-sanitize');
+const reqSanitizer = require('req-sanitizer');
+const helmet = require("helmet");
 
 //connect to mongodb
 main().catch((err) => console.log(err));
@@ -42,16 +45,34 @@ app.use(methodOverride("_method"));
 //read files from public dir
 app.use(express.static(path.join(__dirname, "public")));
 
+// To remove data using these defaults:
+app.use(mongoSanitize());
+
+//All  req.body values are sanitized against XSS
+app.use(reqSanitizer());
+
+//secure app by setting various HTTP headers
+app.use(
+  helmet({
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+  })
+);
+
 //config session
 const sessionConfig = {
   secret: "mysecrete",
   resave: false,
   saveUninitialized: true,
   cookie: {
+    name: "mycookie",
+    httpOnly: true,
     expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   },
 };
+
+
 //use session
 app.use(session(sessionConfig));
 //use flash
@@ -79,10 +100,6 @@ app.use("/campgrounds", campgroundsRoute);
 //add /campgrounds/:id/reviews before every campgrounds route
 app.use("/campgrounds/:id/reviews", reviewsRoute);
 
-//render home page
-app.get("/", (req, res) => {
-  res.render("home");
-});
 
 //if any route does not exit, will run this code
 app.all("*", (req, res, next) => {

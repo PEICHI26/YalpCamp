@@ -18,11 +18,11 @@ const {
 router.get("/new", isLoggedIn, newForm);
 router.route("/")
     .get(catchAsync(index))
-    .post(isLoggedIn,upload.single('image'),validateCampground,catchAsync(create) )
+    .post(isLoggedIn,upload.array('image'),validateCampground,catchAsync(create) )
 router.route("/:id")
     .get(isLoggedIn, catchAsync(showDetails))
-    .put(isLoggedIn,upload.single('image'), isAuthor, validateCampground, catchAsync(update))
-    .delete(isLoggedIn, isAuthor, catchAsync(deleteCamp));
+    .put(isLoggedIn,upload.array('image'), isAuthor, validateCampground, catchAsync(update))
+    .delete(isLoggedIn,upload.array('image'), isAuthor, catchAsync(deleteCamp));
 
 router.get("/:id/edit", isLoggedIn, isAuthor, catchAsync(edit));
 

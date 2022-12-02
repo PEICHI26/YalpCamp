@@ -3,33 +3,44 @@
 
     <h1>Edit Campgroud</h1>
 
-    <form class="row g-3" action="/campgrounds/<%= campground._id %>?_method=PUT" method="post" enctype="multipart/form-data" novalidate id="validate">
+    <form class="row g-3" action="/campgrounds/<%= campground._id %>?_method=PUT" method="post"
+        enctype="multipart/form-data" novalidate id="validate">
         <div class="col-md-6">
             <label for="title" class="form-label">Title</label>
             <input type="text" class="form-control" id="title" name="title" value="<%= campground.title %>" required>
         </div>
         <div class="col-md-6">
             <label for="location" class="form-label">Location</label>
-            <input type="text" class="form-control" id="location" name="location" value="<%= campground.location %>" required>
+            <input type="text" class="form-control" id="location" name="location" value="<%= campground.location %>"
+                required>
         </div>
         <div class="col-9">
-            <input type="file" class="form-control" id="image" name="image">
-            </div>
+            <input type="file" class="form-control" id="image" name="image" multiple>
+        </div>
+        <h4>Check the checkbox to delete</h4>
         <div class="col-12">
+            <% campground.images.forEach((img, i)=> { %>
+                <img src="<%= img.thumbnail %>"  alt="..." />
+                <div class="form-check-inline">
+                    <input type="checkbox" id="image-<%=i%>" name="deleteImages[]" value="<%= img.filename %>">
+                </div>
+                <% }) %>
+        </div>
+        <div class="col-15">
             <label for="description" class="form-label">Description</label>
-            <textarea type="text" class="form-control" id="description" name="description" value="<%= campground.description %>"></textarea>
+            <textarea type="text" class="form-control" id="description" name="description"
+                value="<%= campground.description %>"></textarea>
         </div>
         <div class="col-md-2">
             <label for="price" class="form-label">Price</label>
             <div class="input-group">
                 <span class="input-group-text">$</span>
                 <input type="text" class="form-control" id="price" name="price"
-                    aria-label="Dollar amount (with dot and two decimal places)" value="<%= campground.price %>" required>
+                    aria-label="Dollar amount (with dot and two decimal places)" value="<%= campground.price %>"
+                    required>
             </div>
         </div>
         <div class="col-12">
             <button type="submit" class="btn btn-primary">Edit</button>
         </div>
     </form>
-
-

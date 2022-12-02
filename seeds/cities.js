@@ -24,7 +24,7 @@ module.exports = [
         longitude: -87.6297982,
         population: "2718782",
         rank: "3",
-        state: "Illinois",
+        state: "IChicago",
     },
     {
         city: "Houston",
