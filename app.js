@@ -20,13 +20,17 @@ const mongoSanitize = require('express-mongo-sanitize');
 const reqSanitizer = require('req-sanitizer');
 const helmet = require("helmet");
 
+//mongodb Atlas - mongodb url
+const dbUrl = process.env.DB_URL
+const sessionSecret = process.env.SESSION_SECRET
+
 //connect to mongodb
 main().catch((err) => console.log(err));
 async function main() {
-  await mongoose.connect("mongodb://localhost:27017/yalp-camp");
+  await mongoose.connect(dbUrl);
   console.log("connect to mongo");
-  // use `await mongoose.connect('mongodb://user:password@localhost:27017/test');` if your database has auth enabled
 }
+//mongodb://localhost:27017/yalp-camp
 
 //read ejs file
 app.engine("ejs", ejsMate);
@@ -61,7 +65,7 @@ app.use(
 
 //config session
 const sessionConfig = {
-  secret: "mysecrete",
+  secret: sessionSecret,
   resave: false,
   saveUninitialized: true,
   cookie: {
